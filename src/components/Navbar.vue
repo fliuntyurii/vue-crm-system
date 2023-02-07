@@ -5,7 +5,7 @@
         <a href="#" @click.stop="$emit('click')">
           <i class="material-icons black-text">dehaze</i>
         </a>
-        <span class="black-text">{{ $filters.dateFilter('1') }}</span>
+        <span class="black-text">{{ date }}</span>
       </div>
 
       <ul class="right hide-on-small-and-down">
@@ -50,25 +50,47 @@
   import { defineComponent } from 'vue'
   declare const M: any;
 
+  type CustomDate = {
+    day?: "2-digit" | "numeric" | undefined,
+    month?: "2-digit" | "numeric" | "long" | "short" | "narrow" | undefined,
+    year?: "2-digit" | "numeric" | undefined,
+    hour?: "2-digit" | "numeric" | undefined,
+    minute?: "2-digit" | "numeric" | undefined,
+    second?: "2-digit" | "numeric" | undefined
+  }
+
   export default defineComponent({
     data: () => ({
-      date: new Date(),
+      date: new Date() as Date | string,
       interval: undefined as number | undefined,
-      dropdown: null as any
+      dropdown: null as any,
+      
+      options: {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      } as CustomDate
     }),
+
     methods: {
       logout() {
         this.$router.push('/login');
       }
     },
+
     mounted() {
       this.interval = setInterval(() => {
-        this.date = new Date()
+        this.date = new Intl.DateTimeFormat('en-US', this.options).format(new Date())
       }, 1000)
+
       this.dropdown = M.Dropdown.init(this.$refs.dropdown, {
         constrainWidth: true,
       });
     },
+
     beforeUnmount() {
       clearInterval(this.interval);
       if (this.dropdown && this.dropdown.destroy) {

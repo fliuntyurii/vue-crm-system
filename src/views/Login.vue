@@ -1,5 +1,5 @@
 <template>
-  <form class="card auth-card">
+  <form class="card auth-card" @submit.prevent="submitLogin">
     <div class="card-content">
       <span class="card-title">Home Bookkeeping</span>
       <div class="input-field">
@@ -34,8 +34,30 @@
   
       <p class="center">
         Have not an account?
-        <a href="/">Register</a>
+        <router-link to="/register">Register</router-link>
       </p>
     </div>
   </form>
 </template>
+
+<script lang="ts">
+import { defineComponent } from 'vue';
+import { email, required, minLength } from 'vuelidate/lib/validators';
+
+export default defineComponent({
+  name: 'login',
+  data: () => ({
+    email: '',
+    password: ''
+  }),
+  validations: {
+    email: { email, required },
+    password: { required, minLength: minLength(8) }
+  },
+  methods: {
+    submitLogin() {
+      this.$router.push('/')
+    }
+  },
+})
+</script>
