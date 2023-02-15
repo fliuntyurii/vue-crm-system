@@ -1,79 +1,59 @@
 <template>
   <div>
-    <div class="page-title">
-      <h3>Category</h3>
-    </div>
-    <section>
-      <div class="row">
-        <div class="col s12 m6">
-          <div>
-            <div class="page-subtitle">
-              <h4>Create</h4>
-            </div>
-  
-            <form>
-              <div class="input-field">
-                <input
-                    id="name"
-                    type="text"
-                >
-                <label for="name">Name</label>
-                <span class="helper-text invalid">Print name</span>
-              </div>
-  
-              <div class="input-field">
-                <input
-                    id="limit"
-                    type="number"
-                >
-                <label for="limit">Limit</label>
-                <span class="helper-text invalid">Min value</span>
-              </div>
-  
-              <button class="btn waves-effect waves-light" type="submit">
-                Create
-                <i class="material-icons right">send</i>
-              </button>
-            </form>
-          </div>
-        </div>
-        <div class="col s12 m6">
-          <div>
-            <div class="page-subtitle">
-              <h4>Edit</h4>
-            </div>
-  
-            <form>
-              <div class="input-field" >
-                <select>
-                  <option>Category</option>
-                </select>
-                <label>Choose a Category</label>
-              </div>
-  
-              <div class="input-field">
-                <input type="text" id="name">
-                <label for="name">Name</label>
-                <span class="helper-text invalid">TITLE</span>
-              </div>
-  
-              <div class="input-field">
-                <input
-                    id="limit"
-                    type="number"
-                >
-                <label for="limit">Limit</label>
-                <span class="helper-text invalid">LIMIT</span>
-              </div>
-  
-              <button class="btn waves-effect waves-light" type="submit">
-                Refresh
-                <i class="material-icons right">send</i>
-              </button>
-            </form>
-          </div>
-        </div>
+    <Loader v-if="loading" />
+    <div v-else>
+      <div class="page-title">
+        <h3>Category</h3>
       </div>
-    </section>
+      <section>
+        <div class="row">
+          <CategoryCreate 
+            @created="addNewCategory"
+          />
+          <CategoryEdit 
+            :categories="categories"
+          />
+        </div>
+      </section>
+    </div>
   </div>
 </template>
+
+<script lang="ts">
+  import { defineComponent } from 'vue';
+  import CategoryCreate from './../components/Category/CategoryCreate.vue';
+  import CategoryEdit from './../components/Category/CategoryEdit.vue';
+  import Loader from './../components/Loader.vue';
+
+  type Category = {
+    id?: string,
+    title: string,
+    limit: number,
+  }
+
+  export default defineComponent({
+    name: "categories",
+
+    data() {
+      return {
+        categories: [] as Category[],
+        loading: true,
+      }
+    },
+
+    async mounted() {
+      this.categories = await this.$store.dispatch('fetchCategories');
+      this.loading = false;
+    },
+
+    methods: {
+      addNewCategory(category: Category) {
+        this.categories.push(category)
+      }
+    },
+
+    components: {
+      CategoryCreate, CategoryEdit, Loader
+    },
+  })
+</script>

@@ -7,7 +7,7 @@
       <router-link
         active-class="active"
         :to="link.url"
-        class="waves-effect waves-orange pointer"
+        class="waves-effect waves-teal pointer"
       >
         {{ link.title }}
       </router-link>

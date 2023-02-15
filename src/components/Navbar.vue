@@ -1,5 +1,5 @@
 <template>
-  <nav class="navbar orange lighten-1" @click.prevent="$emit('click')">
+  <nav class="navbar lighten-1" @click.prevent="$emit('click')">
     <div class="nav-wrapper">
       <div class="navbar-left">
         <a href="#" @click.stop="$emit('click')">
@@ -16,7 +16,7 @@
             data-target="dropdown"
             ref="dropdown"
           >
-            USER NAME
+            {{ name }}
             <i class="material-icons right">arrow_drop_down</i>
           </a>
 
@@ -29,7 +29,7 @@
                 <i class="material-icons">account_circle</i>Profile
               </router-link>
             </li>
-            <li class="divider" tabindex="-1"></li>
+            <li class="divider" tabindex="1"></li>
             <li>
               <a 
                 href="#" 
@@ -74,6 +74,12 @@
         second: '2-digit'
       } as CustomDate
     }),
+
+    computed: {
+      name() {
+        return this.$store?.getters?.info?.name;
+      }
+    },
 
     methods: {
       logout() {

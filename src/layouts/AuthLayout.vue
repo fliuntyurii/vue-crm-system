@@ -4,6 +4,18 @@
   </div>
 </template>
 
-<style lang="scss">
-
-</style>
+<script>
+  export default {
+    computed: {
+      error() {
+        return this.$store.getters.error;
+      }
+    },
+    
+    watch: {
+      error(fbErr) {
+        M.toast({ html: fbErr.message })
+      }
+    }
+  };
+</script>
