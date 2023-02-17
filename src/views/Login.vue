@@ -77,7 +77,7 @@
       return {
         state,
         v$
-      } 
+      }
     },
 
     methods: {

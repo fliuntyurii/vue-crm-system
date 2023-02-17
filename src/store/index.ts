@@ -2,6 +2,7 @@ import { createStore, Store } from "vuex";
 import auth from './auth';
 import info from './info';
 import category from './category';
+import record from './record';
 
 declare module '@vue/runtime-core' {
   interface State {
@@ -42,5 +43,6 @@ export default createStore({
     auth,
     info,
     category,
+    record,
   },
 });

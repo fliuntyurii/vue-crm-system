@@ -4,14 +4,12 @@
       <div class="page-subtitle">
         <h4>Edit</h4>
       </div>
-
       <form @submit.prevent="submitHandler">
         <div class="input-field" >
           <select 
             ref="select"
             v-model="current"
           >
-            <option value="" disabled selected>Choose your option</option>
             <option
               v-for="c of categories"
               :key="c.id"
@@ -73,12 +71,18 @@
         required: true
       }
     },
+
+    data() {
+      return {
+        select: null,
+        current: null,
+      }
+    },
+
     setup () {
       const state = reactive({
         title: "",
         limit: 100,
-        select: null,
-        current: null,
       });
 
       const rules = computed(() => {
@@ -97,24 +101,23 @@
 
     watch: {
       current(id) {
-        console.log(id)
         const { title, limit } = this.categories.find(c => c.id == id);
         this.state.title = title;
         this.state.limit = limit;
-        this.state.current = id;
+        this.current = id;
       }
     },
 
     created() {
       const { id, title, limit } = this.categories[0];
-      this.state.current = id;
+      this.current = id;
       this.state.title = title;
       this.state.limit = limit;
     },
 
     mounted() {
       M.updateTextFields();
-      this.state.select = M.FormSelect.init(this.$refs.select);
+      this.select = M.FormSelect.init(this.$refs.select);
     },
 
     destroyed() {
@@ -130,20 +133,21 @@
           return;
         }
 
+        const categoryData = {
+          title: this.state.title,
+          limit: this.state.limit,
+          id: this.current
+        }
         try {
-          await this.$store.dispatch('editCategory', {
-            title: this.state.title,
-            limit: this.state.limit,
-            id: this.state.current
-          });
+          await this.$store.dispatch('editCategory', categoryData);
 
           this.v$.$reset();
           M.toast({ html: 'Category has been edited!' });
-          this.$emit('edited', category);
+          this.$emit('edited', categoryData);
         } catch (error) {
           console.log(error)
         }
       }
-    }
+    },
   }
 </script>

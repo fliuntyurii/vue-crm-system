@@ -11,8 +11,12 @@
             @created="addNewCategory"
           />
           <CategoryEdit 
+            v-if="categories.length"
             :categories="categories"
+            :key="categories.length + updateCount"
+            @edited="updateCategories"
           />
+          <p v-else class="center">Category list empty.</p>
         </div>
       </section>
     </div>
@@ -24,12 +28,7 @@
   import CategoryCreate from './../components/Category/CategoryCreate.vue';
   import CategoryEdit from './../components/Category/CategoryEdit.vue';
   import Loader from './../components/Loader.vue';
-
-  type Category = {
-    id?: string,
-    title: string,
-    limit: number,
-  }
+  import { Category } from '@/types';
 
   export default defineComponent({
     name: "categories",
@@ -38,6 +37,7 @@
       return {
         categories: [] as Category[],
         loading: true,
+        updateCount: 0
       }
     },
 
@@ -48,12 +48,22 @@
 
     methods: {
       addNewCategory(category: Category) {
-        this.categories.push(category)
-      }
+        this.categories.push(category);
+      },
+
+      updateCategories(category: Category) {
+        const index = this.categories.findIndex(c => c.id == category.id);
+        this.categories[index].title = category.title;
+        this.categories[index].limit = category.limit;
+
+        this.updateCount++;
+      },
     },
 
     components: {
-      CategoryCreate, CategoryEdit, Loader
+      CategoryCreate, 
+      CategoryEdit, 
+      Loader
     },
   })
 </script>

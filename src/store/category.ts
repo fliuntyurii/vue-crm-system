@@ -1,10 +1,5 @@
 import firebase from 'firebase/compat/app';
-
-type Category = {
-  id?: string,
-  title: string,
-  limit: number,
-}
+import { Category } from '@/types';
 
 export default {
   actions: {
@@ -29,10 +24,7 @@ export default {
           .push({ title, limit });
 
         return { title, limit, id: category.key }
-      } catch (err) {
-        commit('setError', err);
-        throw err;
-      }
+      } catch (err) {}
     },
 
     async editCategory({ dispatch, commit }: any, { title, limit, id }: Category) {
@@ -41,11 +33,7 @@ export default {
         await firebase.database()
           .ref(`/users/${uid}/categories`).
           child(id as string).update({ title, limit });
-
-      } catch (err) {
-        commit('setError', err);
-        throw err;
-      }
+      } catch (err) {}
     },
   }
 }
