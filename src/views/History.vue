@@ -7,37 +7,59 @@
     <div class="history-chart">
       <canvas></canvas>
     </div>
-  
-    <section>
-      <table>
-        <thead>
-        <tr>
-          <th>#</th>
-          <th>Sum</th>
-          <th>Date</th>
-          <th>Category</th>
-          <th>Type</th>
-          <th>Open</th>
-        </tr>
-        </thead>
-  
-        <tbody>
-        <tr>
-          <td>1</td>
-          <td>1212</td>
-          <td>12.12.32</td>
-          <td>name</td>
-          <td>
-            <span class="white-text badge red">Expenses</span>
-          </td>
-          <td>
-            <button class="btn-small btn">
-              <i class="material-icons">open_in_new</i>
-            </button>
-          </td>
-        </tr>
-        </tbody>
-      </table>
+
+    <Loader v-if="loading"/>
+    <p class="center" v-else-if="!records.length">Record list empty.</p>
+    <section v-else>
+      <HistoryTable 
+        :records="records"
+      />
     </section>
   </div>
 </template>
+
+<script lang="ts">
+  import { defineComponent } from 'vue';
+  import HistoryTable from './../components/HistoryTable.vue';
+  import Loader from '@/components/Loader.vue';
+	import { Category, Record } from '@/types';
+
+  export default defineComponent({
+    name: "history",
+
+    data() {
+      return {
+        loading: true,
+        records: [] as Record[],
+        categories: [] as Category[],
+      }
+    },
+
+    async mounted() {
+			// this.records = await this.$store.dispatch('fetchRecords');
+      const records = await this.$store.dispatch('fetchRecords');
+			this.categories = await this.$store.dispatch('fetchCategories');
+      this.records = records.map((record: Record) => {
+        return {
+          ...record,
+          categoryName: this.categories.find((c: Category) => c.id == record.categoryId)?.title,
+          typeClass: record.type === 'income' ? 'green' : 'red',
+          typeText: record.type === 'income' ? 'Income' : 'Outcome',
+        }
+      });
+
+      this.loading = false;
+    },
+
+    methods: {
+      paginationHandler() {
+        console.log('page');
+      }
+    },
+
+    components: {
+      HistoryTable,
+      Loader,
+    }
+  });
+</script>

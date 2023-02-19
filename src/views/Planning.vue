@@ -12,7 +12,7 @@
 					<strong>{{ c.title }}</strong>
 					{{ c.spend || 0 }}₴ from {{ c.limit || 0 }}₴
 				</p>
-				<div class="progress" >
+				<div class="progress" v-tooltip="'I am a tooltip'">
 					<div
 							class="determinate"
 							:class="[c.progressColor]"

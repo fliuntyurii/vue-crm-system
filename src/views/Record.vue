@@ -197,10 +197,6 @@
 				} else {
 					M.toast({ html: "Have not enough money in your account." });
 				}
-        const formData = {
-          amount: this.state.amount,
-          description: this.state.description,
-        }
 			}
 		},
 

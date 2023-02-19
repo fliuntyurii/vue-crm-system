@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
+import firebase from 'firebase/compat/app';
 import HomeView from "../views/HomeView.vue";
 
 const routes: Array<RouteRecordRaw> = [
@@ -27,7 +28,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/categories",
     name: "categories",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/Categories.vue'),
   },
@@ -35,7 +37,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/history",
     name: "history",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/History.vue'),
   },
@@ -43,7 +46,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/profile",
     name: "profile",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/Profile.vue'),
   },
@@ -51,15 +55,17 @@ const routes: Array<RouteRecordRaw> = [
     path: "/record",
     name: "record",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/Record.vue'),
   },
   {
-    path: "/detail-record",
+    path: "/detail/:id",
     name: "detailRecord",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/DetailRecord.vue'),
   },
@@ -67,7 +73,8 @@ const routes: Array<RouteRecordRaw> = [
     path: "/planning",
     name: "planning",
     meta: {
-      layout: "main"
+      layout: "main",
+      auth: true
     },
     component: () => import('@/views/Planning.vue'),
   }
@@ -76,6 +83,17 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  const currentUser = firebase.auth().currentUser;
+  const requireAuth = to.matched.some(record => record.meta.auth);
+
+  if(requireAuth && !currentUser) {
+    next('/login');
+  } else {
+    next();
+  }
 });
 
 export default router;

@@ -4,6 +4,7 @@ import 'firebase/compat/database';
 
 import { createApp } from "vue";
 import Vuelidate from "vuelidate";
+import Paginate from 'vuejs-paginate';
 import firebase from 'firebase/compat/app';
 
 import App from "./App.vue";
@@ -11,6 +12,7 @@ import "./registerServiceWorker";
 import router from "./router";
 import store from "./store";
 import Loader from './components/Loader.vue';
+import tooltipDirective from './../directives/tooltip.directive';
 
 firebase.initializeApp({
   apiKey: "AIzaSyAfLbcPJBOJCfIrFGnA57KgbDXO6PmqiZ0",
@@ -27,6 +29,14 @@ let app: any;
 
 firebase.auth().onAuthStateChanged(() => {
   if (!app) {
-    app = createApp(App).use(store).use(router).use(Vuelidate as any).use(app as any).component('Loader', Loader).mount("#app");
+    app = createApp(App)
+      .use(store)
+      .use(router)
+      .use(Vuelidate as any)
+      .use(app as any)
+      .directive('tooltip', tooltipDirective)
+      .component('Loader', Loader)
+      .component('paginate', Paginate)
+      .mount("#app");
   }
 });
